@@ -34,12 +34,12 @@ def board_detail(request, board_name):
         return Response({'error': 'Board not found'}, status=status.HTTP_404_NOT_FOUND)
     
     if request.method == 'GET':
-        status = Status.objects.filter(board=board)
+        statuses = Status.objects.filter(board=board)
         status_with_cards = []
-        for status in status:
-            cards = Card.objects.filter(status=status)
+        for status_item in statuses:
+            cards = Card.objects.filter(status=status_item)
             card_serializer = CardSerializer(cards, many=True)
-            status_with_cards.append({'status':StatusSerializer(status).data, 'cards':card_serializer.data})
+            status_with_cards.append({'status':StatusSerializer(status_item).data, 'cards':card_serializer.data})
         return Response({'Board':BoardSerializer(board).data,'Status': status_with_cards})
         
     elif request.method == 'PUT':
@@ -51,29 +51,40 @@ def board_detail(request, board_name):
     
     elif request.method == 'DELETE':
         board.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({'message':'Board deleted successfully'},status=status.HTTP_204_NO_CONTENT)
     
-@api_view(['GET','POST','DELETE'])
+@api_view(['GET', 'POST','DELETE'])
 @permission_classes([permissions.IsAuthenticated])
-def status_manager(request,board_name=None):
+def status_manager(request, board_name=None, status_name=None):
+    try:
+        board = Board.objects.get(title=board_name, owner=request.user)
+    except Board.DoesNotExist:
+        return Response({'error': 'Board not found'}, status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
-        try:
-            board = Board.objects.get(title=board_name, owner=request.user)
-        except Board.DoesNotExist:
-            return Response({'erro':'Board not found'},status=status.HTTP_404_NOT_FOUND)
-        status = Status.objects.filter(board=board)
-        serializer = StatusSerializer(status, many=True)
+        statuses = Status.objects.filter(board=board)
+        serializer = StatusSerializer(statuses, many=True)
         return Response(serializer.data)
-    
+
     elif request.method == 'POST':
         serializer = StatusSerializer(data=request.data)
         if serializer.is_valid():
-            board_title = serializer.validated_data['board'].title
-            if not Board.objects.filter(title=board_title, owner=request.user).exists():
+            board = serializer.validated_data['board']
+            if board.owner != request.user:
                 return Response({'error': 'Invalid board'}, status=status.HTTP_400_BAD_REQUEST)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    elif request.method == 'DELETE':
+        try:
+            statuses = Status.objects.get(board=board,title__iexact=status_name)
+        except Status.DoesNotExist:
+            return Response({'error':'Status not found'},status=status.HTTP_404_NOT_FOUND)
+        statuses.delete()
+        return Response({'message':'Status deleted successfully'},status=status.HTTP_204_NO_CONTENT)
+
+
+
     
 @api_view(['GET','POST','PUT','PATCH','DELETE'])
 @permission_classes([permissions.IsAuthenticated])
@@ -135,4 +146,4 @@ def card_manager(request,board_name=None,card_name=None):
     elif request.method == 'DELETE':
         card = Card.objects.filter (board__owner=request.user, title__iexact=card_name).first()
         card.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({'message':'Card deleted successfully'},status=status.HTTP_204_NO_CONTENT)
