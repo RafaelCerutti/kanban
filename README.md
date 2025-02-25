@@ -16,7 +16,7 @@ Com o código aberto utilizando uma IDE execute as instruções via terminal
   pip install –r requirements.txt 
  
 3- Configuração do projeto: 
-  Após instalar as dependências execute os comandas para fazer as migrações do banco de dados e iniciar o servidor: 
+  Após instalar as dependências execute os comandas para fazer as migrações do banco de dados, criar um usuário administrador e iniciar o servidor: 
   python manage.py migrate
   python manage.py createsuperuser
   python manage.py runserver 
@@ -39,7 +39,7 @@ Descrição:
   GET: Visualiza os detalhes de um quadro específico.
   PUT: Atualiza o quadro com base no nome.
   DELETE: Deleta o quadro.
-Obeservação: O nome do quadro na URL deve ser o mesmo nome do quadro criado.
+Observação: O nome do quadro na URL deve ser o mesmo nome do quadro criado.
 
 3. Visualizar, criar e deletar etapas de um quadro:
 URL: http://127.0.0.1:8000/kanban_api/boards/<board_name>/statuses/
@@ -51,7 +51,7 @@ Descrição:
 4. Deletar uma etapa do quadro:
 URL: http://127.0.0.1:8000/kanban_api/boards/<board_name>/statuses/<status_name>/
 Descrição;
-   DELETE: Delete a etapa através do nome.
+   DELETE: Deleta a etapa através do nome.
 
 5. Visualizar e criar tarefas em um quadro:
 URL: http://127.0.0.1:8000/kanban_api/cards/<board_name>/
@@ -130,8 +130,8 @@ Resposta esperada : 200 OK
 
 Observações finais:
 
-Não consta nos exemplos, porém, como dito anteriormente é possivel deletar Quadros,Etapas e Tarefas.
+Não consta nos exemplos, porém, como dito anteriormente, é possivel deletar Quadros, Etapas e Tarefas.
 Para atualizar uma etapa de uma tarefa é necessário ter as etapas criadas e associadas a um quadro, apenas assim para conseguir fazer a transição de etapas.
-É possivel criar, visualizar, modificar e deletar informações via usuario administrador(http://127.0.0.1:8000/admin/), podendo visualizar as infrormações através das URL's diretamente no navegador.
+É possivel criar, visualizar, modificar e deletar informações via usuario administrador(http://127.0.0.1:8000/admin/), podendo visualizar as informações através das URL's diretamente no navegador.
 
 
