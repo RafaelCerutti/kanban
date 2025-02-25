@@ -132,5 +132,6 @@ Observações finais:
 
 Não consta nos exemplos, porém, como dito anteriormente é possivel deletar Quadros,Etapas e Tarefas.
 Para atualizar uma etapa de uma tarefa é necessário ter as etapas criadas e associadas a um quadro, apenas assim para conseguir fazer a transição de etapas.
+É possivel criar, visualizar, modificar e deleter informações via usuario administrador(http://127.0.0.1:8000/admin/), podendo visualizar as infrormações através das URL's diretamente no navegador.
 
 
